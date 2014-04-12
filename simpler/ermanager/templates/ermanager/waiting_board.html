@@ -6,7 +6,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>#</th>
+                <th>Location</th>
                 <th>Priority</th>
                 <th>Last Name</th>
                 <th>First Name</th>
@@ -14,9 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for location,patients in dict1.items %}
-            {% if location > 0 %}
-            <tr>
+            {% for patients in dict1 %}
             {% if patients.2 == "CR" %}
             <tr class="danger">
             {% else %}
@@ -30,13 +28,11 @@
             {% endif %}
             {% endif %}
             {% endif %}
-                <td>{{ location }}</td>
+                <td>ER Waiting</td>
                 <td>{{ patients.2 }}</td>
                 <td>{{ patients.1 }}</td>
                 <td>{{ patients.0 }}</td>
                 <td>{{ patients.3 }}</td>
-            </tr>
-            {% endif %}
           </tr>
             {% endfor %}
         </tbody>

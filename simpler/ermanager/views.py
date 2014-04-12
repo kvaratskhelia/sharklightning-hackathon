@@ -40,7 +40,8 @@ def patient_edit(request,patient_id):
 def submit_edit(request):
     if request.method == 'POST':
         form = PatientForm(request.POST)
-    print form.errors
+    else:
+      form = PatientForm()
     pat_id = request.session.get('patient_id')
     print str(pat_id)+"LETS SEE"
     if form.is_valid():
@@ -50,7 +51,7 @@ def submit_edit(request):
         patient.needs_review = form.cleaned_data['needs_review']
         patient.is_waiting = form.cleaned_data['is_waiting']
         var = form.cleaned_data['loc']
-        loc_temp = Location.objects.get(id=var)
+        loc_temp = Location.objects.get(number=var)
         loc_temp.save()
         patient.loc = loc_temp
         patient.last_moved = form.cleaned_data['last_moved']
@@ -59,11 +60,11 @@ def submit_edit(request):
         patient.nurse_notes = form.cleaned_data['nurse_notes']
         patient.doctor_notes = form.cleaned_data['doctor_notes']
         patient.save()
-        patient_list = Patient.objects.order_by('-last_name')
-        template= loader.get_template('ermanager/doctor_view.html')
-        context = RequestContext(request, {
-            'patient_list':patient_list,
-        })
+    patient_list = Patient.objects.order_by('-last_name')
+    template= loader.get_template('ermanager/doctor_view.html')
+    context = RequestContext(request, {
+        'patient_list':patient_list,
+    })
 
     return HttpResponse(template.render(context))
 
@@ -94,8 +95,9 @@ def big_board(request):
     for room in rooms:
         num = room.number
         try:
-            person = Patient.objects.get(loc=room)
-            dict1[num] = (person.first_name, person.last_name, person.priority)
+            if num > 0:
+              person = Patient.objects.get(loc=room)
+              dict1[num] = (person.first_name, person.last_name, person.priority,person.nurse_notes)
         except Patient.DoesNotExist:
             dict1[num] = ("", "", "",)
     template = loader.get_template('ermanager/big_board.html')
@@ -104,6 +106,24 @@ def big_board(request):
         })
     return HttpResponse(template.render(context))
 
+@login_required(login_url='/auth/login/')
+def waiting_board(request):
+    rooms = Location.objects.order_by('number')
+    dict1 = []
+    for room in rooms:
+        num = room.number
+        try:
+            if num < 0:
+              people = Patient.objects.filter(loc=room)
+              for person in people:
+                dict1.append((person.first_name, person.last_name, person.priority,person.nurse_notes))
+        except Patient.DoesNotExist:
+            print("Don't worry about it")
+    template = loader.get_template('ermanager/waiting_board.html')
+    context = RequestContext(request, {
+        'dict1':dict1,
+        })
+    return HttpResponse(template.render(context))
 
 #Form definition
 

@@ -8,6 +8,8 @@ urlpatterns = patterns('',
 
     url(r'^bigscreen/$', views.big_board, name='big_screen'),
 
+    url(r'^waitingscreen/$', views.waiting_board, name='waiting_screen'),
+
     url(r'^doctor_page/$',views.doctor_page, name='doctor_page'),
 
     #url(r'^nurse_page/$', views.nurse_page, name='nurse_page'),
