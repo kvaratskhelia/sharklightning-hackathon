@@ -7,18 +7,17 @@ Edit: {{ patient.last_name }}, {{ patient.first_name }}
 {% block content %}
 <form action="/ermanager/submit_edit/" method="POST">{% csrf_token %}
 
-        {% for field in form %}
+	{% for field in form %}
 
-        <input type="hidden" name="patient_id" value="{{patient_id}}"/>
+	<input type="hidden" name="patient_id" value="{{patient_id}}"/>
 
-        <div class="fieldWrapper">
-            <tr>
-              {{ field.errors }}
-              {{ field.label_tag }} {{ field }}
-            </tr>
-        </div>
-        {% endfor %}
-        <input class="btn btn-primary" type="submit" value="Submit"/>
+	<div class="fieldWrapper">
+		<tr>
+			{{ field.label}} {{ field }}
+		</tr>
+	</div>
+	{% endfor %}
+	<input class="btn btn-primary" type="submit" value="Submit"/>
 </form>
 
 
